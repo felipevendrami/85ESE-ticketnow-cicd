@@ -1,0 +1,27 @@
+[submodule "microservices/ticketnow-analytics-service"]
+	path = microservices/ticketnow-analytics-service
+	url = https://gitlab.com/ticketnow/ticketnow-analytics-service.git
+[submodule "microservices/ticketnow-auth-service"]
+	path = microservices/ticketnow-auth-service
+	url = https://gitlab.com/ticketnow/ticketnow-auth-service.git
+[submodule "microservices/ticketnow-event-service"]
+	path = microservices/ticketnow-event-service
+	url = https://gitlab.com/ticketnow/ticketnow-event-service.git
+[submodule "microservices/ticketnow-gateway"]
+	path = microservices/ticketnow-gateway
+	url = https://gitlab.com/ticketnow/ticketnow-gateway.git
+[submodule "microservices/ticketnow-infra"]
+	path = microservices/ticketnow-infra
+	url = https://gitlab.com/ticketnow/ticketnow-infra.git
+[submodule "microservices/ticketnow-notification-service"]
+	path = microservices/ticketnow-notification-service
+	url = https://gitlab.com/ticketnow/ticketnow-notification-service.git
+[submodule "microservices/ticketnow-order-service"]
+	path = microservices/ticketnow-order-service
+	url = https://gitlab.com/ticketnow/ticketnow-order-service.git
+[submodule "microservices/ticketnow-ticket-service"]
+	path = microservices/ticketnow-ticket-service
+	url = https://gitlab.com/ticketnow/ticketnow-ticket-service.git
+[submodule "microservices/ticketnow-user-profile-service"]
+	path = microservices/ticketnow-user-profile-service
+	url = https://gitlab.com/ticketnow/ticketnow-user-profile-service.git
