@@ -1,0 +1,159 @@
+name: CI-CD TicketNow
+
+on:
+  push:
+    branches:
+      - develop
+      - hml
+      - main
+  pull_request:
+
+jobs:
+  # ==========================
+  # BUILD E TESTE DOS NODE MS
+  # ==========================
+
+  node_microservices:
+    name: Build & Test - Microsserviços Node
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: true
+      matrix:
+        service:
+          - auth-service
+          - user-profile-service
+          - gateway
+          - analytics-service
+          - notification-service
+
+    steps:
+      - name: Checkout Principal
+        uses: actions/checkout@v3
+        with:
+          submodules: recursive
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Instalar dependências
+        run: |
+          cd microservices/${{ matrix.service }}
+          npm install
+
+      - name: Rodar testes
+        run: |
+          cd microservices/${{ matrix.service }}
+          npm test -- --coverage
+
+      - name: Enviar cobertura do Node
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage-node-${{ matrix.service }}
+          path: microservices/${{ matrix.service }}/coverage/
+
+
+  # ==========================
+  # BUILD E TESTE DOS JAVA MS
+  # ==========================
+
+  java_microservices:
+    name: Build & Test - Microsserviços Java
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: true
+      matrix:
+        service:
+          - order-service
+          - event-service
+          - ticket-service
+
+    steps:
+      - name: Checkout Principal
+        uses: actions/checkout@v3
+        with:
+          submodules: recursive
+
+      - name: Setup JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Build e Testes (Maven)
+        run: |
+          cd microservices/${{ matrix.service }}
+          mvn -B clean test
+
+      - name: Enviar cobertura do MS Java
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage-java-${{ matrix.service }}
+          path: microservices/${{ matrix.service }}/target/site/jacoco/
+
+
+  # ==========================
+  # BUILD DO PROJETO PRINCIPAL MAVEN
+  # ==========================
+
+  ci_app_build:
+    name: Build CI-App (Maven)
+    runs-on: ubuntu-latest
+    needs:
+      - node_microservices
+      - java_microservices
+
+    steps:
+      - name: Checkout Repositório
+        uses: actions/checkout@v3
+
+      - name: Setup JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Build & Test
+        run: |
+          mvn -B clean test
+
+      - name: Enviar cobertura do CI-App
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage-ci-app
+          path: target/site/jacoco/
+
+
+
+  # ==========================
+  # DEPLOYS SIMULADOS
+  # ==========================
+
+  deploy_dev:
+    name: Deploy DEV (simulado)
+    runs-on: ubuntu-latest
+    needs: ci_app_build
+    if: github.ref == 'refs/heads/develop'
+    steps:
+      - run: echo "Deploy DEV executado com sucesso!"
+
+  deploy_hml:
+    name: Deploy HML (simulado)
+    runs-on: ubuntu-latest
+    needs: ci_app_build
+    if: github.ref == 'refs/heads/hml'
+    steps:
+      - run: echo "Deploy HML executado com sucesso!"
+
+  deploy_prod:
+    name: Deploy PROD (simulado)
+    runs-on: ubuntu-latest
+    needs: ci_app_build
+    if: github.ref == 'refs/heads/main'
+    environment:
+      name: production
+    steps:
+      - run: echo "Deploy de PRODUÇÃO (manual)"
