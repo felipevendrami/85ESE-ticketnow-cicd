@@ -21,11 +21,11 @@ jobs:
       fail-fast: true
       matrix:
         service:
-          - auth-service
-          - user-profile-service
-          - gateway
-          - analytics-service
-          - notification-service
+          - ticketnow-auth-service
+          - ticketnow-user-profile-service
+          - ticketnow-gateway
+          - ticketnow-analytics-service
+          - ticketnow-notification-service
 
     steps:
       - name: Checkout Principal
@@ -67,9 +67,9 @@ jobs:
       fail-fast: true
       matrix:
         service:
-          - order-service
-          - event-service
-          - ticket-service
+          - ticketnow-order-service
+          - ticketnow-event-service
+          - ticketnow-ticket-service
 
     steps:
       - name: Checkout Principal
