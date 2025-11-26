@@ -49,7 +49,7 @@ jobs:
           npm test -- --coverage
 
       - name: Enviar cobertura do Node
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: coverage-node-${{ matrix.service }}
           path: microservices/${{ matrix.service }}/coverage/
@@ -89,7 +89,7 @@ jobs:
           mvn -B clean test
 
       - name: Enviar cobertura do MS Java
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: coverage-java-${{ matrix.service }}
           path: microservices/${{ matrix.service }}/target/site/jacoco/
@@ -121,7 +121,7 @@ jobs:
           mvn -B clean test
 
       - name: Enviar cobertura do CI-App
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: coverage-ci-app
           path: target/site/jacoco/
