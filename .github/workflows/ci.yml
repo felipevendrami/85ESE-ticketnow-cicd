@@ -126,64 +126,44 @@ jobs:
           name: coverage-ci-app
           path: target/site/jacoco/
 
+
   # ==========================
-  # BUILD & PUSH PARA DOCKER HUB
+  # BUILD & PUSH → DOCKER HUB
   # ==========================
 
   docker_push:
     name: Build & Push Docker Images
     runs-on: ubuntu-latest
-    needs:
-      - node_microservices
-      - java_microservices
-      - ci_app_build
+    needs: ci_app_build
+    if: github.ref == 'refs/heads/hml'
 
     steps:
-      - name: Checkout Repositório
+      - name: Checkout repositório
         uses: actions/checkout@v3
 
       - name: Login no Docker Hub
         uses: docker/login-action@v3
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          username: ${{ secrets.DOCKERHUB_USER }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Configurar Buildx
-        uses: docker/setup-buildx-action@v3
+      - name: Build & Push Node Services
+        run: |
+          for service in ticketnow-auth-service ticketnow-user-profile-service ticketnow-gateway ticketnow-analytics-service ticketnow-notification-service; do
+            cd microservices/$service
+            docker build -t ${{ secrets.DOCKERHUB_USER }}/$service:latest .
+            docker push ${{ secrets.DOCKERHUB_USER }}/$service:latest
+            cd ../..
+          done
 
-      - name: Build & Push Microsserviços Node
-        uses: docker/build-push-action@v6
-        with:
-          context: ./microservices/${{ matrix.service }}
-          file: ./microservices/${{ matrix.service }}/Dockerfile
-          push: true
-          tags: |
-            ${{ secrets.DOCKERHUB_USERNAME }}/ticketnow-${{ matrix.service }}:latest
-
-        strategy:
-          matrix:
-            service:
-              - auth-service
-              - user-profile-service
-              - gateway
-              - analytics-service
-              - notification-service
-
-      - name: Build & Push Microsserviços Java
-        uses: docker/build-push-action@v6
-        with:
-          context: ./microservices/${{ matrix.service }}
-          file: ./microservices/${{ matrix.service }}/Dockerfile
-          push: true
-          tags: |
-            ${{ secrets.DOCKERHUB_USERNAME }}/ticketnow-${{ matrix.service }}:latest
-
-        strategy:
-          matrix:
-            service:
-              - order-service
-              - event-service
-              - ticket-service
+      - name: Build & Push Java Services
+        run: |
+          for service in ticketnow-order-service ticketnow-event-service ticketnow-ticket-service; do
+            cd microservices/$service
+            docker build -t ${{ secrets.DOCKERHUB_USER }}/$service:latest .
+            docker push ${{ secrets.DOCKERHUB_USER }}/$service:latest
+            cd ../..
+          done
 
 
   # ==========================
@@ -201,7 +181,7 @@ jobs:
   deploy_hml:
     name: Deploy HML (simulado)
     runs-on: ubuntu-latest
-    needs: ci_app_build
+    needs: docker_push
     if: github.ref == 'refs/heads/hml'
     steps:
       - run: echo "Deploy HML executado com sucesso!"
