@@ -144,15 +144,15 @@ jobs:
       - name: Login no Docker Hub
         uses: docker/login-action@v3
         with:
-          username: ${{ secrets.DOCKERHUB_USER }}
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Build & Push Node Services
         run: |
           for service in ticketnow-auth-service ticketnow-user-profile-service ticketnow-gateway ticketnow-analytics-service ticketnow-notification-service; do
             cd microservices/$service
-            docker build -t ${{ secrets.DOCKERHUB_USER }}/$service:latest .
-            docker push ${{ secrets.DOCKERHUB_USER }}/$service:latest
+            docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/$service:latest .
+            docker push ${{ secrets.DOCKERHUB_USERNAME }}/$service:latest
             cd ../..
           done
 
@@ -160,8 +160,8 @@ jobs:
         run: |
           for service in ticketnow-order-service ticketnow-event-service ticketnow-ticket-service; do
             cd microservices/$service
-            docker build -t ${{ secrets.DOCKERHUB_USER }}/$service:latest .
-            docker push ${{ secrets.DOCKERHUB_USER }}/$service:latest
+            docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/$service:latest .
+            docker push ${{ secrets.DOCKERHUB_USERNAME }}/$service:latest
             cd ../..
           done
 
