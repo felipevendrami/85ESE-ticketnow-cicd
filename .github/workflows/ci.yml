@@ -126,38 +126,6 @@ jobs:
           name: coverage-ci-app
           path: target/site/jacoco/
 
-
-
-  # ==========================
-  # DEPLOYS SIMULADOS
-  # ==========================
-
-  deploy_dev:
-    name: Deploy DEV (simulado)
-    runs-on: ubuntu-latest
-    needs: ci_app_build
-    if: github.ref == 'refs/heads/develop'
-    steps:
-      - run: echo "Deploy DEV executado com sucesso!"
-
-  deploy_hml:
-    name: Deploy HML (simulado)
-    runs-on: ubuntu-latest
-    needs: ci_app_build
-    if: github.ref == 'refs/heads/hml'
-    steps:
-      - run: echo "Deploy HML executado com sucesso!"
-
-  deploy_prod:
-    name: Deploy PROD (simulado)
-    runs-on: ubuntu-latest
-    needs: ci_app_build
-    if: github.ref == 'refs/heads/main'
-    environment:
-      name: production
-    steps:
-      - run: echo "Deploy de PRODUÇÃO (manual)"
-
   # ==========================
   # BUILD & PUSH PARA DOCKER HUB
   # ==========================
@@ -216,3 +184,34 @@ jobs:
               - order-service
               - event-service
               - ticket-service
+
+
+  # ==========================
+  # DEPLOYS SIMULADOS
+  # ==========================
+
+  deploy_dev:
+    name: Deploy DEV (simulado)
+    runs-on: ubuntu-latest
+    needs: ci_app_build
+    if: github.ref == 'refs/heads/develop'
+    steps:
+      - run: echo "Deploy DEV executado com sucesso!"
+
+  deploy_hml:
+    name: Deploy HML (simulado)
+    runs-on: ubuntu-latest
+    needs: ci_app_build
+    if: github.ref == 'refs/heads/hml'
+    steps:
+      - run: echo "Deploy HML executado com sucesso!"
+
+  deploy_prod:
+    name: Deploy PROD (simulado)
+    runs-on: ubuntu-latest
+    needs: ci_app_build
+    if: github.ref == 'refs/heads/main'
+    environment:
+      name: production
+    steps:
+      - run: echo "Deploy de PRODUÇÃO (manual)"
