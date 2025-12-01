@@ -149,7 +149,7 @@ jobs:
 
       - name: Build & Push Node Services
         run: |
-          for service in ticketnow-auth-service ticketnow-user-profile-service ticketnow-gateway ticketnow-analytics-service ticketnow-notification-service; do
+          for service in ticketnow-analytics-service ticketnow-auth-service ticketnow-gateway ticketnow-notification-service ticketnow-user-profile-service; do
             cd microservices/$service
             docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/$service:latest .
             docker push ${{ secrets.DOCKERHUB_USERNAME }}/$service:latest
@@ -158,12 +158,12 @@ jobs:
 
       - name: Build & Push Java Services
         run: |
-          for service in ticketnow-order-service ticketnow-event-service ticketnow-ticket-service; do
+          for service in ticketnow-event-service ticketnow-order-service ticketnow-ticket-service; do
             cd microservices/$service
             docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/$service:latest .
             docker push ${{ secrets.DOCKERHUB_USERNAME }}/$service:latest
             cd ../..
-          done
+          done  
 
 
   # ==========================
