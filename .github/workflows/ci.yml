@@ -107,7 +107,7 @@ jobs:
       - name: Build e Testes (Maven)
         run: |
           cd microservices/${{ matrix.service }}
-          mvn -B clean test -DskipTests
+          mvn -B clean test jacoco:report
 
       - name: Enviar cobertura do MS Java
         uses: actions/upload-artifact@v4
@@ -154,7 +154,7 @@ jobs:
           distribution: 'temurin'
 
       - name: Build & Test
-        run: mvn -B clean test -DskipTests
+        run: mvn -B clean test
 
       - name: Enviar cobertura do CI-App
         uses: actions/upload-artifact@v4
