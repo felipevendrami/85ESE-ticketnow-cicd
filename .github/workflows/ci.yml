@@ -58,6 +58,16 @@ jobs:
           name: coverage-node-${{ matrix.service }}
           path: microservices/${{ matrix.service }}/coverage/
 
+      - name: Análise SonarQube (Node)
+        env:
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: |
+          cd microservices/${{ matrix.service }}
+          npx sonar-scanner \
+            -Dsonar.projectKey=${{ matrix.service }} \
+            -Dsonar.host.url=${SONAR_HOST_URL} \
+            -Dsonar.login=${SONAR_TOKEN}
 
   # ==========================
   # BUILD E TESTE DOS JAVA MS
@@ -101,6 +111,16 @@ jobs:
           name: coverage-java-${{ matrix.service }}
           path: microservices/${{ matrix.service }}/target/site/jacoco/
 
+      - name: Análise SonarQube (Java)
+        env:
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: |
+          cd microservices/${{ matrix.service }}
+          mvn -B sonar:sonar \
+            -Dsonar.projectKey=${{ matrix.service }} \
+            -Dsonar.host.url=${SONAR_HOST_URL} \
+            -Dsonar.login=${SONAR_TOKEN}
 
   # =======================================
   # BUILD DO PROJETO PRINCIPAL MAVEN

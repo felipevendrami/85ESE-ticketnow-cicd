@@ -2,5 +2,14 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/microservices/ticketnow-analytics-service" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/microservices/ticketnow-auth-service" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/microservices/ticketnow-event-service" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/microservices/ticketnow-gateway" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/microservices/ticketnow-infra" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/microservices/ticketnow-notification-service" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/microservices/ticketnow-order-service" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/microservices/ticketnow-ticket-service" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/microservices/ticketnow-user-profile-service" vcs="Git" />
   </component>
 </project>
