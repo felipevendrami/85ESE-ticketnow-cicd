@@ -34,9 +34,6 @@ jobs:
         with:
           submodules: recursive
 
-      - name: Update Git Submodules
-        run: git submodule update --init --recursive --remote
-
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
@@ -58,6 +55,20 @@ jobs:
           name: coverage-node-${{ matrix.service }}
           path: microservices/${{ matrix.service }}/coverage/
 
+      - name: Análise SonarCloud (Node)
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_ORG: ${{ secrets.SONAR_ORG }}
+        run: |
+          cd microservices/${{ matrix.service }}
+          npx sonar-scanner \
+            -Dsonar.projectKey=${{ matrix.service }} \
+            -Dsonar.organization=${SONAR_ORG} \
+            -Dsonar.host.url=https://sonarcloud.io \
+            -Dsonar.login=${SONAR_TOKEN} \
+            -Dsonar.sources=. \
+            -Dsonar.exclusions=node_modules/**,coverage/** \
+            -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
 
   # ==========================
   # BUILD E TESTE DOS JAVA MS
@@ -81,9 +92,6 @@ jobs:
         with:
           submodules: recursive
 
-      - name: Update Git Submodules
-        run: git submodule update --init --recursive --remote
-
       - name: Setup JDK
         uses: actions/setup-java@v4
         with:
@@ -93,7 +101,7 @@ jobs:
       - name: Build e Testes (Maven)
         run: |
           cd microservices/${{ matrix.service }}
-          mvn -B clean test -DskipTests
+          mvn -B clean test jacoco:report
 
       - name: Enviar cobertura do MS Java
         uses: actions/upload-artifact@v4
@@ -101,6 +109,17 @@ jobs:
           name: coverage-java-${{ matrix.service }}
           path: microservices/${{ matrix.service }}/target/site/jacoco/
 
+      - name: Análise SonarCloud (Java)
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_ORG: ${{ secrets.SONAR_ORG }}
+        run: |
+          cd microservices/${{ matrix.service }}
+          mvn -B sonar:sonar \
+            -Dsonar.projectKey=${{ matrix.service }} \
+            -Dsonar.organization=${SONAR_ORG} \
+            -Dsonar.host.url=https://sonarcloud.io \
+            -Dsonar.login=${SONAR_TOKEN}
 
   # =======================================
   # BUILD DO PROJETO PRINCIPAL MAVEN
@@ -119,9 +138,6 @@ jobs:
         with:
           submodules: recursive
 
-      - name: Update Git Submodules
-        run: git submodule update --init --recursive --remote
-
       - name: Setup JDK
         uses: actions/setup-java@v4
         with:
@@ -129,7 +145,7 @@ jobs:
           distribution: 'temurin'
 
       - name: Build & Test
-        run: mvn -B clean test -DskipTests
+        run: mvn -B clean test
 
       - name: Enviar cobertura do CI-App
         uses: actions/upload-artifact@v4
@@ -153,9 +169,6 @@ jobs:
         uses: actions/checkout@v4
         with:
           submodules: recursive
-
-      - name: Update Git Submodules
-        run: git submodule update --init --recursive --remote
 
       - name: Login no Docker Hub
         uses: docker/login-action@v3
